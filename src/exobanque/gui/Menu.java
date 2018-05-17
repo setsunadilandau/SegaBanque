@@ -82,17 +82,20 @@ public class Menu {
             choix = scan.nextInt();
             if (choix == 0)
             {afficherAccueil();}
-            else if (choix > 0 && choix < listeComptes.size())
+            else if (choix > 0 && choix <= listeComptes.size())
             {
-                afficherOptionsCompte(listeComptes.get(scan.nextInt()));
+                afficherOptionsCompte(listeComptes.get(choix - 1));
             }
             else
             {
                 System.out.println("Valeur incorrecte");
+                System.out.println(choix);
+                System.out.println(listeComptes.size());
                 afficherSelectionCompte();
             }
         } catch (Exception e) {
             System.out.println("Valeur incorrecte");
+            System.out.println(e);
             afficherSelectionCompte();
         }
 
@@ -114,6 +117,7 @@ public class Menu {
             sb.append("3 - Calculer et ajouter les intérêts");
             sb.append(System.lineSeparator());
         }
+
         System.out.println(sb.toString());
 
         try {
@@ -155,6 +159,14 @@ public class Menu {
             System.out.println("Valeur incorrecte");
             afficherOptionsCompte(compte);
         }
+    }
+
+    private void afficherRetrait(Compte compte) {
+
+    }
+
+    private void afficherVersement(Compte compte) {
+
     }
 
     private void afficherCreationCompte() {
