@@ -49,6 +49,7 @@ public class Menu {
 
     private void afficherSelectionCompte() {
         int choix;
+        int nbrComptes = listeComptes.size();;
 
         sb.setLength(0);
         sb.append("0 - Retour à l'accueil");
@@ -56,13 +57,13 @@ public class Menu {
         sb.append("Sélectionnez un compte :");
         sb.append(System.lineSeparator());
 
-        if (listeComptes.size() == 0)
+        if (nbrComptes == 0)
         {
             sb.append("Aucune compte n'a été créé");
         }
         else
         {
-            for (int i = 0; i < listeComptes.size(); i++)
+            for (int i = 0; i < nbrComptes; i++)
             {
                 Compte compte = listeComptes.get(i);
                 String typeCompte = compte.getClass().getSimpleName().substring(6);
@@ -82,20 +83,17 @@ public class Menu {
             choix = scan.nextInt();
             if (choix == 0)
             {afficherAccueil();}
-            else if (choix > 0 && choix <= listeComptes.size())
+            else if (choix > 0 && choix <= nbrComptes)
             {
                 afficherOptionsCompte(listeComptes.get(choix - 1));
             }
             else
             {
                 System.out.println("Valeur incorrecte");
-                System.out.println(choix);
-                System.out.println(listeComptes.size());
                 afficherSelectionCompte();
             }
         } catch (Exception e) {
             System.out.println("Valeur incorrecte");
-            System.out.println(e);
             afficherSelectionCompte();
         }
 
@@ -166,7 +164,19 @@ public class Menu {
     }
 
     private void afficherVersement(Compte compte) {
+        sb.setLength(0);
+        sb.append("0 - Retour à l'accueil");
+        sb.append(System.lineSeparator());
+        sb.append("Montant du versement : ");
+        sb.append(System.lineSeparator());
+        System.out.println(sb.toString());
 
+        try {
+
+        } catch (Exception e) {
+            System.out.println("Valeur incorrecte");
+            afficherVersement(compte);
+        }
     }
 
     private void afficherCreationCompte() {
