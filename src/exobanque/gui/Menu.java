@@ -4,6 +4,8 @@ import exobanque.compte.model.Compte;
 import exobanque.compte.model.CompteEpargne;
 import exobanque.compte.model.ComptePayant;
 import exobanque.compte.model.CompteSimple;
+import exobanque.exceptions.MontantInferieurA0Exception;
+import exobanque.exceptions.SoldeInsuffisantException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,13 +108,15 @@ public class Menu {
         sb.append("Compte n°");
         sb.append(compte.codeCompte);
         sb.append(System.lineSeparator());
-        sb.append("1 - Versement");
+        sb.append("1 - Afficher le solde");
         sb.append(System.lineSeparator());
-        sb.append("2 - Retrait");
+        sb.append("2 - Versement");
+        sb.append(System.lineSeparator());
+        sb.append("3 - Retrait");
         sb.append(System.lineSeparator());
         if (compte.getClass().getSimpleName().equals("CompteEpargne"))
         {
-            sb.append("3 - Calculer et ajouter les intérêts");
+            sb.append("4 - Calculer et ajouter les intérêts");
             sb.append(System.lineSeparator());
         }
 
@@ -125,12 +129,15 @@ public class Menu {
                     afficherSelectionCompte();
                     break;
                 case 1:
-                    afficherVersement(compte);
+                    afficherSolde(compte);
                     break;
                 case 2:
-                    afficherRetrait(compte);
+                    afficherVersement(compte);
                     break;
                 case 3:
+                    afficherRetrait(compte);
+                    break;
+                case 4:
                     if (compte.getClass().getSimpleName().equals("CompteEpargne"))
                     {
                         try {
@@ -159,11 +166,85 @@ public class Menu {
         }
     }
 
-    private void afficherRetrait(Compte compte) {
+    private void afficherSolde(Compte compte) {
+        String nomClasse = compte.getClass().getSimpleName();
 
+        sb.setLength(0);
+        sb.append("Solde du compte : ");
+        sb.append(compte.getSolde());
+        sb.append(System.lineSeparator());
+
+
+        if (nomClasse.equals("CompteSimple"))
+        {
+            sb.append("Découvert autorisé : ");
+            sb.append(((CompteSimple)compte).getDecouvertAutorise());
+        }
+        else if (nomClasse.equals("CompteEpargne"))
+        {
+            sb.append("Taux d'intérêts : ");
+            sb.append(((CompteEpargne)compte).getTauxInteret());
+            sb.append("%");
+        }
+        else if (nomClasse.equals("ComptePayant"))
+        {
+            sb.append("Pourcentage de comission : ");
+            sb.append(((ComptePayant)compte).getTauxDePaiement());
+            sb.append("%");
+        }
+        sb.append(System.lineSeparator());
+
+        System.out.println(sb.toString());
+        afficherOptionsCompte(compte);
+    }
+
+    private void afficherRetrait(Compte compte) {
+        double entree;
+
+        sb.setLength(0);
+        sb.append("0 - Retour à l'accueil");
+        sb.append(System.lineSeparator());
+        sb.append("Montant du retrait : ");
+        sb.append(System.lineSeparator());
+        System.out.println(sb.toString());
+
+        try {
+            entree = scan.nextDouble();
+            if (entree == 0)
+            {afficherOptionsCompte(compte);}
+            else {
+                effectuerRetrait(compte, entree);
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Valeur incorrecte");
+            afficherVersement(compte);
+        }
+    }
+
+    private void effectuerRetrait(Compte compte, double montant) {
+        try {
+            compte.retrait(montant);
+            sb.setLength(0);
+            sb.append("Le retrait a été effectué");
+            sb.append(System.lineSeparator());
+            sb.append("Nouveau solde : ");
+            sb.append(compte.getSolde());
+            sb.append(System.lineSeparator());
+            System.out.println(sb.toString());
+            afficherOptionsCompte(compte);
+        } catch (MontantInferieurA0Exception e) {
+            System.out.println("Le montant ne peut être inférieur à 0");
+            afficherRetrait(compte);
+        } catch (SoldeInsuffisantException e) {
+            System.out.println("Le solde est insuffisant pour effectuer ce retrait");
+            afficherRetrait(compte);
+        }
     }
 
     private void afficherVersement(Compte compte) {
+        double entree;
+
         sb.setLength(0);
         sb.append("0 - Retour à l'accueil");
         sb.append(System.lineSeparator());
@@ -172,9 +253,31 @@ public class Menu {
         System.out.println(sb.toString());
 
         try {
-
-        } catch (Exception e) {
+            entree = scan.nextDouble();
+            if (entree == 0)
+            {afficherOptionsCompte(compte);}
+            else
+            { effectuerVersement(compte, entree); }
+        }
+        catch (Exception e) {
             System.out.println("Valeur incorrecte");
+            afficherVersement(compte);
+        }
+    }
+
+    private void effectuerVersement(Compte compte, double montant) {
+        try {
+            compte.versement(montant);
+            sb.setLength(0);
+            sb.append("Le versement a été effectué");
+            sb.append(System.lineSeparator());
+            sb.append("Nouveau solde : ");
+            sb.append(compte.getSolde());
+            sb.append(System.lineSeparator());
+            System.out.println(sb.toString());
+            afficherOptionsCompte(compte);
+        } catch (MontantInferieurA0Exception e) {
+            System.out.println("Le montant ne peut être inférieur à 0");
             afficherVersement(compte);
         }
     }

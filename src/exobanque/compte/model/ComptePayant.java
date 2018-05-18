@@ -14,6 +14,10 @@ public class ComptePayant extends Compte {
         this.tauxDePaiement = tauxDePaiement;
     }
 
+    public int getTauxDePaiement() {
+        return tauxDePaiement;
+    }
+
     public void changerTauxDePaiement(int nouveauTaux) throws MontantInferieurA0Exception {
         if (nouveauTaux > 0)
         {this.tauxDePaiement = nouveauTaux;}
@@ -39,16 +43,16 @@ public class ComptePayant extends Compte {
     @Override public void retrait(double montant) throws MontantInferieurA0Exception, SoldeInsuffisantException {
         double montantAvecComission = montant + this.getComission(montant);
 
-        if (montant < 0)
+        if (montantAvecComission < 0)
         {
             throw new MontantInferieurA0Exception();
         }
-        else if (this.solde < montant)
+        else if (this.solde < montantAvecComission)
         {
             throw new SoldeInsuffisantException();
         }
         else
-        {this.solde += montantAvecComission;}
+        {this.solde -= montantAvecComission;}
     }
 
 

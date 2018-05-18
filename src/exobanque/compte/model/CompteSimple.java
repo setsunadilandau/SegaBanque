@@ -34,7 +34,7 @@ public class CompteSimple extends Compte {
         {
            throw new MontantInferieurA0Exception();
         }
-        else if (this.solde - montant < this.decouvertAutorise)
+        else if (this.solde - montant < -this.decouvertAutorise)
         {
             throw new SoldeInsuffisantException();
         }

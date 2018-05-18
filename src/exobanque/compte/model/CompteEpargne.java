@@ -11,6 +11,10 @@ public class CompteEpargne extends Compte {
         this.tauxInteret = tauxInteret;
     }
 
+    public double getTauxInteret() {
+        return this.tauxInteret;
+    }
+
     public void changerTauxInteret(double nouveauTaux) {
         if (nouveauTaux > 0)
         { this.tauxInteret = nouveauTaux; }
@@ -22,7 +26,7 @@ public class CompteEpargne extends Compte {
 
     public void calculInteret() {
         if (this.solde > 0)
-        { this.solde += this.solde * this.tauxInteret; }
+        { this.solde += this.solde * (this.tauxInteret/100); }
         else
         {
             //TODO Exception
